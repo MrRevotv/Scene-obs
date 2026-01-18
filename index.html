@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Border Effect</title>
+    <style>
+        /* Nasconde elementi interni di default */
+        body > * { display: none !important; }
+
+        body {
+            background-color: rgba(0,0,0,0) !important;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Forza l'accelerazione hardware */
+            transform: translateZ(0);
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            /* Lasciamo spazio per il glow */
+            width: calc(100% - 40px);
+            height: calc(100% - 40px);
+            box-sizing: border-box;
+
+            /* BORDO */
+            border: 5px solid transparent;
+            border-image: linear-gradient(135deg, #0051ff, #b300ff, #0051ff) 1;
+
+            /* ISTRUZIONE PER LA GPU: Ottimizza il rendering per queste proprietà */
+            will-change: box-shadow, opacity;
+
+            /* ANIMAZIONE */
+            animation: smoothPulse 3s infinite ease-in-out alternate;
+        }
+
+        @keyframes smoothPulse {
+            0% {
+                /* Meno strati di ombre = più fluido */
+                box-shadow:
+                0 0 15px #0051ff,
+                inset 0 0 10px #b300ff;
+                opacity: 0.8;
+            }
+            100% {
+                box-shadow:
+                0 0 35px #0051ff,
+                inset 0 0 25px #b300ff;
+                opacity: 1.0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Il body è vuoto, come previsto dal CSS, per mostrare l'effetto del bordo glowing -->
+</body>
+</html>

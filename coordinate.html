@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+    body { 
+        margin: 0; 
+        background: transparent; 
+        overflow: hidden; 
+        font-family: 'Orbitron', sans-serif;
+        height: 100vh;
+        position: relative;
+    }
+
+    /* --- NUOVA SCRITTA AMAZON --- */
+    .cta-amazon {
+        position: absolute;
+        bottom: 45px; /* Appena sopra la barra (40px + 5px di margine) */
+        left: 30px;
+        color: #ff9900; /* Colore tipico Amazon */
+        font-size: 18px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+        animation: pulse-glow 3s infinite ease-in-out;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 0.8; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.03); text-shadow: 0 0 15px rgba(255, 153, 0, 0.8); }
+    }
+
+    /* --- BARRA DI SISTEMA --- */
+    .system-bar {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.92);
+        border-top: 1px solid rgba(0, 229, 255, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        box-sizing: border-box;
+        box-shadow: 0 -5px 20px rgba(0, 229, 255, 0.2);
+    }
+
+    .hud-text {
+        color: #00e5ff;
+        font-size: 15px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-variant-numeric: tabular-nums;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    #status-message {
+        transition: opacity 0.5s ease-in-out;
+        min-width: 300px;
+    }
+
+    .status-online { color: #0f0; text-shadow: 0 0 8px #0f0; margin-right: 10px; }
+    .status-alert { color: #ff4dff; text-shadow: 0 0 8px #ff4dff; margin-right: 10px; font-weight: 900; }
+    
+    .hud-label { color: rgba(0, 229, 255, 0.4); font-size: 0.85em; margin-right: 5px; }
+    
+    .time-slot {
+        color: #ff4dff;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        padding-left: 15px;
+        font-weight: 700;
+    }
+</style>
+</head>
+<body>
+
+    <div class="cta-amazon">
+        Vuoi aiutarmi? Link Amazon in descrizione
+    </div>
+
+    <div class="system-bar">
+        <div class="hud-text" id="status-container">
+             <div id="status-message">
+                <span class="status-online">●</span> SYSTEM ONLINE
+             </div>
+        </div>
+
+        <div class="hud-text" id="coords-display">
+            INITIALIZING NAV...
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById("coords-display");
+        const statusMsg = document.getElementById("status-message");
+        
+        let x = 18400, y = -4200, z = 1200;
+
+        function updateSystem() {
+            x += Math.floor(Math.random() * 5) - 2;
+            y += Math.floor(Math.random() * 5) - 2;
+            z += Math.floor(Math.random() * 3) - 1;
+            
+            let time = new Date().toLocaleTimeString('it-IT', { hour12: false });
+            
+            display.innerHTML = `
+                <span><span class="hud-label">X</span>${x}</span>
+                <span><span class="hud-label">Y</span>${y}</span>
+                <span><span class="hud-label">Z</span>${z}m</span>
+                <span class="time-slot">UTC: ${time}</span>
+            `;
+        }
+
+        let toggle = false;
+        function rotateMessage() {
+            statusMsg.style.opacity = 0;
+            setTimeout(() => {
+                if (toggle) {
+                    statusMsg.innerHTML = '<span class="status-online">●</span> SYSTEM ONLINE';
+                } else {
+                    statusMsg.innerHTML = '<span class="status-alert">>></span> LINK UTILI IN DESCRIZIONE';
+                }
+                statusMsg.style.opacity = 1;
+                toggle = !toggle;
+            }, 500);
+        }
+
+        setInterval(updateSystem, 1000);
+        setInterval(rotateMessage, 10000);
+        updateSystem();
+    </script>
+</body>
+</html>

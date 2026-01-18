@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+}
+.marquee-zone {
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(180deg, rgba(6,6,25,0.95), rgba(10,10,40,0.85));
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+.track {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+.content-set {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+}
+.item {
+    display: flex;
+    align-items: center;
+    margin: 0 60px;
+}
+.icon {
+    width: 48px;
+    height: 48px;
+    margin-right: 15px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+.text {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ff4dff;
+    text-shadow: 0 0 8px rgba(255, 77, 255, 0.5);
+    white-space: nowrap;
+}
+.highlight { color: #00e5ff; text-shadow: 0 0 10px #00e5ff; }
+</style>
+</head>
+<body>
+<div class="marquee-zone">
+    <div class="track">
+        <div class="content-set">
+            <div class="item"><div class="icon"><img src="img/MRREVOtv.png"></div><div class="text highlight">MRREVOtv</div></div>
+            <div class="item"><div class="icon"><img src="img/rsi.png"></div><div class="text">RSI</div></div>
+            <div class="item"><div class="icon"><img src="img/azeron.png"></div><div class="text">Azeron</div></div>
+            <div class="item"><div class="icon"><img src="img/origin.png"></div><div class="text">ORIGIN</div></div>
+            <div class="item"><div class="icon"><img src="img/star.png"></div><div class="text">REFERRAL CODE: STAR-MZGQ-463G</div></div>
+            <div class="item"><div class="icon"><img src="img/drake.png"></div><div class="text">DRAKE</div></div>
+            <div class="item"><div class="icon"><img src="img/anvil.png"></div><div class="text">ANVIL</div></div>
+            <div class="item"><div class="icon"><img src="img/esperia.png"></div><div class="text">ESPERIA</div></div>
+            <div class="item"><div class="icon"><img src="img/tobii.png"></div><div class="text">Tobii</div></div>
+            <div class="item"><div class="icon"><img src="img/aegis.png"></div><div class="text">AEGIS</div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const track = document.querySelector('.track');
+const marquee = document.querySelector('.marquee-zone');
+
+function startMarquee() {
+    const images = track.querySelectorAll('img');
+    const loadPromises = Array.from(images).map(img => img.complete ? Promise.resolve() : new Promise(r => img.addEventListener('load', r)));
+    Promise.all(loadPromises).then(() => {
+        const marqueeWidth = marquee.clientWidth;
+        const trackWidth = track.getBoundingClientRect().width;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(${marqueeWidth}px)`;
+        track.offsetWidth;
+        track.style.transition = 'transform 180s linear';
+        track.style.transform = `translateX(-${trackWidth + marqueeWidth + 50}px)`;
+    });
+}
+
+window.addEventListener('load', startMarquee);
+track.addEventListener('transitionend', () => {
+    setTimeout(() => startMarquee(), 50000);
+});
+</script>
+</body>
+</html>
