@@ -13,23 +13,36 @@
         position: relative;
     }
 
-    /* --- NUOVA SCRITTA AMAZON --- */
+    /* --- BARRA SECONDARIA --- */
     .cta-amazon {
         position: absolute;
-        bottom: 45px; /* Appena sopra la barra (40px + 5px di margine) */
-        left: 30px;
-        color: #ff9900; /* Colore tipico Amazon */
+        bottom: 40px; 
+        left: 0;
+        width: 100%;
+        height: 80px; /* Aumentata per ospitare scritte sovrapposte se serve */
+        overflow: hidden;
+        z-index: 10;
+    }
+
+    .cta-amazon span {
+        position: absolute;
+        bottom: 10px;
+        opacity: 0;
+        transition: opacity 1s ease-in-out, left 0.5s ease;
+        white-space: nowrap;
+        color: #ff9900; 
         font-size: 18px;
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 1px;
         text-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
-        animation: pulse-glow 3s infinite ease-in-out;
     }
 
-    @keyframes pulse-glow {
-        0%, 100% { opacity: 0.8; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.03); text-shadow: 0 0 15px rgba(255, 153, 0, 0.8); }
+    /* Stile speciale per la seconda scritta quando appaiono insieme */
+    .cta-amazon span.secondary {
+        bottom: 40px; /* Appare leggermente più in alto */
+        color: #00e5ff; /* Colore ciano per distinguerla nel mucchio */
+        text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
     }
 
     /* --- BARRA DI SISTEMA --- */
@@ -79,8 +92,9 @@
 </head>
 <body>
 
-    <div class="cta-amazon">
-        Vuoi aiutarmi? Link Amazon in descrizione
+    <div class="cta-amazon" id="amazon-container">
+        <span id="msg-1"></span>
+        <span id="msg-2" class="secondary"></span>
     </div>
 
     <div class="system-bar">
@@ -98,16 +112,22 @@
     <script>
         const display = document.getElementById("coords-display");
         const statusMsg = document.getElementById("status-message");
-        
+        const msg1 = document.getElementById('msg-1');
+        const msg2 = document.getElementById('msg-2');
+
         let x = 18400, y = -4200, z = 1200;
+
+        const texts = [
+            "Vuoi aiutarmi? Link Amazon in descrizione",
+            "Vuoi aiutarmi? Usa il mio referral code"
+        ];
+        let currentIdx = 0;
 
         function updateSystem() {
             x += Math.floor(Math.random() * 5) - 2;
             y += Math.floor(Math.random() * 5) - 2;
             z += Math.floor(Math.random() * 3) - 1;
-            
             let time = new Date().toLocaleTimeString('it-IT', { hour12: false });
-            
             display.innerHTML = `
                 <span><span class="hud-label">X</span>${x}</span>
                 <span><span class="hud-label">Y</span>${y}</span>
@@ -116,23 +136,58 @@
             `;
         }
 
-        let toggle = false;
         function rotateMessage() {
             statusMsg.style.opacity = 0;
             setTimeout(() => {
-                if (toggle) {
-                    statusMsg.innerHTML = '<span class="status-online">●</span> SYSTEM ONLINE';
-                } else {
-                    statusMsg.innerHTML = '<span class="status-alert">>></span> LINK UTILI IN DESCRIZIONE';
-                }
+                const isSystem = statusMsg.innerHTML.includes('LINK UTILI');
+                statusMsg.innerHTML = isSystem ? 
+                    '<span class="status-online">●</span> SYSTEM ONLINE' : 
+                    '<span class="status-alert">>></span> LINK UTILI IN DESCRIZIONE';
                 statusMsg.style.opacity = 1;
-                toggle = !toggle;
             }, 500);
+        }
+
+        function showAmazonText() {
+            // Probabilità del 20% di mostrarle entrambe
+            const showBoth = Math.random() < 0.2;
+
+            if (showBoth) {
+                // MOSTRA ENTRAMBE
+                msg1.innerText = texts[0];
+                msg2.innerText = texts[1];
+                
+                msg1.style.left = '10%';
+                msg2.style.left = '50%';
+                
+                msg1.style.opacity = '1';
+                msg2.style.opacity = '1';
+            } else {
+                // MOSTRA UNA SOLA (ALTERNATA)
+                const activeMsg = currentIdx === 0 ? msg1 : msg2;
+                const inactiveMsg = currentIdx === 0 ? msg2 : msg1;
+                
+                activeMsg.innerText = texts[currentIdx];
+                inactiveMsg.style.opacity = '0'; // Assicurati che l'altra sia spenta
+                
+                activeMsg.style.left = (Math.random() * 50 + 10) + '%';
+                activeMsg.style.opacity = '1';
+                
+                currentIdx = (currentIdx + 1) % texts.length;
+            }
+
+            // Nascondi tutto dopo 7 secondi (un po' di più per dare tempo di leggere se sono due)
+            setTimeout(() => {
+                msg1.style.opacity = '0';
+                msg2.style.opacity = '0';
+            }, 7000);
         }
 
         setInterval(updateSystem, 1000);
         setInterval(rotateMessage, 10000);
+        setInterval(showAmazonText, 20000);
+
         updateSystem();
+        showAmazonText();
     </script>
 </body>
 </html>
